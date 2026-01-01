@@ -68,7 +68,7 @@ This makes the approach:
 
 ---
 
-## 🔬 Methodology (Why this works)
+## 🔬 Methodology 
 
 ### Merchant-specific baseline
 
@@ -160,13 +160,7 @@ A latency value that is normal for one company may be abnormal for another.
 
 For example:
 - a fast onboarding flow can be normal for Company B
-- the same latency could be suspicious for Company C if it deviates strongly from its own history
-
-This approach:
-- avoids unfair comparisons
-- reduces false positives
-- adapts to different business models
-
+- the same latency could be suspicious for Company C if it deviates strongly from its own history.
 ---
 
 ## 📊 Dashboard Structure
@@ -246,9 +240,5 @@ This method reduces false positives and reflects how **real compliance and antif
 
 ---
 
-## ▶️ How to Run Locally
 
-```r
-install.packages(c("shiny", "dplyr", "ggplot2", "lubridate", "tidyr", "readxl"))
-shiny::runApp()
 
