@@ -1,0 +1,34 @@
+# =========================
+# Data (NO subir datos reales)
+# =========================
+data/
+*.csv
+*.xlsx
+*.xls
+*.rds
+*.parquet
+
+# =========================
+# Shiny / deployment
+# =========================
+rsconnect/
+
+# =========================
+# RStudio / R
+# =========================
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+
+# =========================
+# Logs / temporales
+# =========================
+*.log
+*.tmp
+
+# =========================
+# OS / system files
+# =========================
+.DS_Store
+Thumbs.db
