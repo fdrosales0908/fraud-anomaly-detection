@@ -1,5 +1,4 @@
 # 🛡️ Compliance & Fraud Dashboard (Shiny)
-
 **Fraud Pattern Detection in Subscription-Based Digital Services**
 
 🔗 **Live Dashboard:**  
@@ -7,45 +6,66 @@ https://latency-fraud-analysis.shinyapps.io/fraud_latency_test/
 
 ---
 
-## 📌 Project Overview
+## 📌 Project overview
+This project shows how we can detect **potential fraud patterns** in **digital subscription services** (Telco / VAS) using **latency analysis** and **statistical comparison**.
 
-This project shows how **potential fraud patterns** can be detected in **digital subscription services** (Telco / VAS type environments) using **latency analysis and statistical comparison**.
-
-The analysis is based on **simulated data covering around 3 months**, for one country and multiple merchants.  
-The project is inspired by **real compliance and antifraud monitoring scenarios**, but **no real data is used**.
+The analysis uses **fully simulated data** (about **3 months**) for **one country** and **multiple merchants**.  
+It is inspired by real compliance and antifraud monitoring, but **no real data** is used.
 
 ⚠️ **Disclaimer**  
-All data in this project is **fully simulated** and created only for portfolio and learning purposes.  
+All data in this project is **simulated** and created only for portfolio and learning purposes.  
 No real customers, companies, or transactions are included.
 
 ---
 
-## 🎯 Business Problem
-
-In digital subscription flows, fraud usually does not appear as a single abnormal event.  
-Instead, it appears as **behavioral patterns**, such as:
-
-- interactions that are **too fast**
-- behavior that is **too consistent**
-- repeated actions with **enough volume**
-
-The challenge is to detect these patterns **early**, without using fixed rules that generate many false positives.
+## 🙋‍♀️ My contribution
+I developed this project end-to-end as a portfolio case:
+- I designed the monitoring approach (merchant baseline + deviation signals).
+- I created the simulated dataset structure and assumptions (3 months, multiple merchants).
+- I built the Shiny dashboard (pages, filters, and investigation views).
+- I wrote the documentation, limitations, and interpretation for non-technical audiences.
 
 ---
 
-## 🧠 Core Concepts
+## 🧰 Skillset & tools demonstrated
 
-### 1️⃣ Latency
+**Skills**
+- Fraud / anomaly monitoring logic (pattern-based signals)
+- Robust statistics (median, IQR, z-scores)
+- Feature design (fast-rate, volume filters)
+- Dashboard design for investigation workflows
+- Technical communication (clear definitions + limitations)
 
-**Latency** is the time (in seconds) between when a user enters a landing page and when the first valid interaction happens.
+**Tools**
+- R, Shiny  
+- Data wrangling and visualization in R *(add your real packages here, e.g., dplyr, ggplot2, plotly, etc.)*
 
-Latency is calculated as: Latency = First_Query_Timestamp − Landing_Page_Time
+---
+
+## 🎯 Business problem
+In digital subscription flows, fraud usually does not appear as one abnormal event.  
+It appears as **repeated behaviour patterns**, for example:
+- interactions that are **too fast**
+- behaviour that is **too consistent**
+- repeated actions with **enough volume**
+
+The goal is to detect these patterns **early**, without fixed rules that create many false positives.
+
+---
+
+## 🧠 Core concepts
+
+### 1) Latency
+**Latency** is the time (in seconds) between a landing page visit and the first valid user interaction.
+
+Latency formula:  
+**Latency = First_Query_Timestamp − Landing_Page_Time**
 
 **Normal latency**
 - irregular and variable
 - wide dispersion (p25–p75)
 - different across users and merchants  
-→ typical human behavior
+→ typical human behaviour
 
 **Suspicious latency**
 - unusually fast
@@ -55,11 +75,10 @@ Latency is calculated as: Latency = First_Query_Timestamp − Landing_Page_Time
 
 ---
 
-### 2️⃣ Fraud Risk (Risk Score)
+### 2) Fraud risk (risk score)
+This project does **not** label fraud directly.
 
-This project does **not label fraud directly**.
-
-Instead, it calculates a **risk score (0–100)** that shows **how abnormal the behavior is**, compared to the **merchant’s own historical behavior**.
+Instead, it calculates a **risk score (0–100)** that shows **how abnormal the behaviour is**, compared to the **merchant’s own historical behaviour**.
 
 This makes the approach:
 - adaptive
@@ -68,104 +87,53 @@ This makes the approach:
 
 ---
 
-## 🔬 Methodology 
+## 🔬 Methodology
 
 ### Merchant-specific baseline
+Instead of fixed rules like *“latency < 2 seconds = fraud”*, the dashboard builds a **baseline for each merchant**, using:
+- typical **median** latency
+- **variability** (IQR / dispersion)
+- typical **share of very fast events** (<2 seconds)
 
-Instead of fixed rules like *“latency < 2 seconds = fraud”*, the dashboard builds a **baseline for each merchant**, including:
-- typical median latency
-- variability (IQR / dispersion)
-- typical proportion of very fast transactions
-
-Each **day × hour block** is compared to this baseline using **statistical deviation (z-scores)**.
+Each **day × hour** block is compared to the baseline using **statistical deviation (z-scores)**.
 
 ---
 
 ### Signals used
-
 Fraud risk increases when:
 - median latency is much lower than normal
-- the proportion of very fast transactions (<2s) is high
-- transaction volume is large enough to avoid random noise
+- the proportion of very fast events (<2s) is high
+- volume is large enough to avoid random noise
 
 ---
 
 ### Why not averages?
-
-Averages are not enough because:
-- they are affected by outliers
-- fraud behavior is asymmetric
-- bots usually create extreme and stable patterns  
+Averages are limited because:
+- they are sensitive to outliers
+- fraud behaviour is often asymmetric
+- bots can create extreme and stable patterns
 
 For this reason, the dashboard uses:
-- medians
+- median
 - IQR
 - z-scores
-- fast-event rates  
+- fast-event rates
 
-This approach is closer to **real antifraud analysis**, not only academic theory.
+This is closer to real antifraud monitoring, not only academic theory.
 
 ---
 
-## 🏢 Analysis by Company (Merchant-Level)
+## 🏢 Merchant-level insights (summary)
+The analysis is done **per merchant**, not globally. Each merchant has different typical latency and variability, so we evaluate anomalies **relative to its own historical baseline**.
 
-The analysis in this project is performed **per company (merchant)**, not at a global level.
+**Example patterns**
+- **Merchant B:** fast but still normal (healthy dispersion) → low risk.
+- **Merchant C:** risk spikes with high fast-rate and reduced variability → possible automation bursts.
 
-Each company has its own:
-- user behavior
-- subscription flow
-- typical latency
-- natural variability
-
-For this reason, companies are **never compared directly using absolute values**.  
-Each company is evaluated **relative to its own historical behavior**.
-
-### Company-level patterns observed
-
-**Company A**  
-Shows stable latency most of the time, with isolated short periods of faster interactions.  
-Risk remains low except for specific day–hour blocks with increased fast-rate.
-
-**Company B**  
-Has generally faster latency due to a simpler flow, but shows normal dispersion.  
-Low risk overall, demonstrating that **fast does not mean fraudulent by itself**.
-
-**Company C**  
-Exhibits clear risk spikes driven by **high fast-rate and reduced variability**, especially during specific hours.  
-This pattern is consistent with possible automation bursts.
-
-**Company D**  
-Displays moderate latency but unusually tight IQR in certain periods.  
-Risk increases are driven more by **consistency** than by absolute speed.
-
-**Company E**  
-Shows irregular behavior with alternating normal and high-risk windows.  
-This suggests episodic activity rather than constant anomalous behavior.
-
-**Company F**  
-Has low transaction volume most of the time.  
-Risk is rarely escalated due to volume filters, preventing false positives.
-
-**Company G**  
-Presents higher risk during weekends, with repeated ultra-fast interactions.  
-This aligns with common fraud patterns observed outside standard business hours.
-
-**Company H**  
-Maintains stable and well-dispersed latency across all periods.  
-Serves as a strong example of **normal human behavior baseline**.
-
-### Why company-level analysis matters
-
-A latency value that is normal for one company may be abnormal for another.
-
-For example:
-- a fast onboarding flow can be normal for Company B
-- the same latency could be suspicious for Company C if it deviates strongly from its own history.
 ---
 
-## 📊 Dashboard Structure
-
-The Shiny dashboard is designed for **monitoring and investigation** and includes the following views:
+## 📊 Dashboard structure
+The dashboard is designed for **monitoring and investigation** and includes:
 
 - **Overview** – General configuration and context
 - **Avg by Hour (Top N)** – Average transaction time by hour
@@ -179,66 +147,48 @@ The Shiny dashboard is designed for **monitoring and investigation** and include
 
 ---
 
-## 📊 Dashboard Examples
+## 📊 Dashboard examples
 
 ### Average transaction time by hour
-Shows the typical daily latency pattern for each merchant.
-
 ![Avg transaction time by hour](images/avg_per_hour.png)
 
----
-
-### Transaction time distribution (Boxplot)
-Highlights latency dispersion and stability by hour.
-
+### Transaction time distribution (boxplot)
 ![Latency boxplot by hour](images/boxplot_per_hour.png)
 
----
-
 ### Median latency and IQR
-Shows robust central tendency (median) and variability (IQR).
-
 ![Median latency and IQR](images/median_iqr.png)
 
----
-
 ### Fraud risk heatmap (day × hour)
-Identifies concentrated risk hotspots over time.
-
 ![Risk heatmap](images/heatmap.png)
 
----
-
 ### Daily latency vs risk
-Shows how latency and risk evolve together over time.
-
 ![Daily latency vs risk](images/daily_latency.png)
 
----
-
 ### Fraud risk by weekday
-Compares median risk levels across days of the week.
-
 ![Weekday risk](images/weekday_risk.png)
 
----
-
 ### Escalation view
-Shows the highest-risk segments prioritized for investigation.
-
 ![Escalation view](images/escalation.png)
 
 ---
 
-## ✅ Conclusion (Based on Dashboard Results)
-
-The dashboard shows **clear and consistent behavior patterns** that support the use of **latency analysis** as an early signal of possible fraud or automation.
-
-Latency becomes a meaningful fraud signal **only when evaluated relative to each company’s own historical behavior**, and when confirmed by repetition and sufficient volume.
-
-This method reduces false positives and reflects how **real compliance and antifraud teams** prioritize investigations in production environments.
+## 📦 Deliverables
+- Live Shiny dashboard (link above)
+- Source code and documentation (this repository)
+- Images with examples of key views (in `/images`)
 
 ---
 
+## ⚠️ Limitations
+- Data is simulated, so results show **method behaviour**, not real fraud cases.
+- The risk score supports prioritization; it does not prove fraud.
+- Thresholds (e.g., <2s fast-rate) are illustrative and should be tuned per market.
 
+---
 
+## ✅ Conclusion
+This dashboard shows clear behaviour patterns that support **latency analysis** as an early signal of possible fraud or automation.
+
+Latency becomes meaningful **only when measured against each merchant’s own baseline**, and when confirmed by repetition and enough volume.
+
+This approach reduces false positives and reflects how compliance and antifraud teams prioritize investigations.
